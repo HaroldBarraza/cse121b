@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Weather</title>
+</head>
+<body>
+    <div class="weather-container">
+        <h1>Weather App</h1>
+        <div id="location-container">
+            <label for="location">Enter Location:</label>
+            <input type="text" id="location" placeholder="City, Country">
+            <button onclick="getWeather()">Get Weather</button>
+        </div>
+        <div id="weather-info"></div>
+    </div>
+    <script>
+        const apikey = "eececc8fc440dba10c2cf1470581941c";
+        const weatherInfoElement = document.querySelector('#weather-info');
+
+        async function getWeather() {
+            const locationInput = document.querySelector('#location');
+            const location = locationInput.value;
+
+            if (!location) {
+                alert('Please enter a location');
+                return;
+            }
+
+            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apikey}&units=metric`;
+
+            try {
+                const response = await fetch(apiUrl);
+                const data = await response.json();
+
+                if (response.ok) {
+                    displayWeather(data);
+                } else {
+                    displayError(data.message);
+                }
+            } catch (error) {
+                console.error('Error fetching weather data:', error);
+                displayError('An error occurred while fetching weather data');
+            }
+        }
+
+        function displayWeather(data) {
+            const { name, main, weather } = data;
+            const temperature = main.temp;
+            const description = weather[0].description;
+
+            const weatherInfoHTML = `
+            <h2>${name}</h2>
+            <p>${temperature}°C</p>
+            <p>${description}</p>
+            `;
+
+            weatherInfoElement.innerHTML = weatherInfoHTML;
+        }
+
+        function displayError(message) {
+            weatherInfoElement.innerHTML = `<p style="color: blue;">Error: ${message}</p>`;
+        }
+    </script>
+</body>
+</html>
