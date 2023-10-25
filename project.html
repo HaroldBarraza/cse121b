@@ -12,15 +12,17 @@
         <div id="location-container">
             <label for="location">Enter Location:</label>
             <input type="text" id="location" placeholder="City, Country">
-            <button onclick="getWeather()">Get Weather</button>
+            <button id="get-weather-button">Get Weather</button>
         </div>
         <div id="weather-info"></div>
     </div>
-    <script>
-        const apikey = "eececc8fc440dba10c2cf1470581941c";
-        const weatherInfoElement = document.querySelector('#weather-info');
+    <script type="module">
+        import { getWeatherData } from './weather-module.js';
 
-        async function getWeather() {
+        const weatherInfoElement = document.querySelector('#weather-info');
+        const getWeatherButton = document.querySelector('#get-weather-button');
+
+        getWeatherButton.addEventListener('click', async () => {
             const locationInput = document.querySelector('#location');
             const location = locationInput.value;
 
@@ -29,22 +31,14 @@
                 return;
             }
 
-            const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${location}&appid=${apikey}&units=metric`;
-
             try {
-                const response = await fetch(apiUrl);
-                const data = await response.json();
-
-                if (response.ok) {
-                    displayWeather(data);
-                } else {
-                    displayError(data.message);
-                }
+                const data = await getWeatherData(location);
+                displayWeather(data);
             } catch (error) {
                 console.error('Error fetching weather data:', error);
                 displayError('An error occurred while fetching weather data');
             }
-        }
+        });
 
         function displayWeather(data) {
             const { name, main, weather } = data;
@@ -66,3 +60,4 @@
     </script>
 </body>
 </html>
+
