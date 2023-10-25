@@ -6,7 +6,8 @@ export async function getWeatherData(location)
 
     const response = await fetch(apiUrl);
 
-    if (!response.ok) {
+    if (!response.ok) 
+    {
         const errorData = await response.json();
         throw new Error(errorData.message);
     }
